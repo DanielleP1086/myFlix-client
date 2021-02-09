@@ -1,6 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+import { LoginView } from '../login-view/login-view';
+import { RegistrationView } from '../registration-view/registration-view';
 import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
 
@@ -8,10 +13,12 @@ export class MainView extends React.Component {
   constructor() {
     super();
 
-    //intialize state as an empty object
+    //intialize as null for each state
     this.state = {
       movies: null,
-      selectedMovie: null
+      selectedMovie: null,
+      user: null,
+      newUser: null
     };
   }
 
@@ -34,20 +41,49 @@ export class MainView extends React.Component {
     });
   }
 
+  onLoggedIn(user) {
+    this.setState({
+      user
+    });
+  }
+
+  onRegister(newUser) {
+    this.setState({
+      newUser
+    });
+  }
+
+  setInititalState() {
+    this.setState({
+      selectedMovie: null
+    });
+  }
+
   render() {
-    const { movies, selectedMovie } = this.state;
+    const { movies, selectedMovie, user, newUser } = this.state;
+
+    if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+
+    if (!newUser) return (
+      <RegistrationView onRegister={(newUser) => this.onRegister(newUser)} />
+    );
 
     //before the movies have been loaded
     if (!movies) return <div className="main-view" />;
 
     return (
       <div className="main-view">
+        {}
         {selectedMovie
-          ? <MovieView movie={selectedMovie} />
-
+          ? (
+            <Row className="justify-content-md-center">
+              <Col md={8}>
+                <MovieView movie={selectedMovie} onBackClick={movie => this.onMovieClick(null)} />
+              </Col>
+            </Row>
+          )
           : movies.map(movie => (
-            <MovieCard key={movie._id} movie={movie} onClick={movie => this.onMovieClick
-              (movie)} />
+            <MovieCard key={movie._id} movie={movie} onClick={movie => this.onMovieClick(movie)} />
           ))
         }
       </div>
