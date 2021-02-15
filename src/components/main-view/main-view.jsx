@@ -82,7 +82,7 @@ export class MainView extends React.Component {
     return (
       <div className="main-view">
         <Navbar bg="dark">
-          <Navbar.Brand href="#home">
+          <Navbar.Brand>
             <img
               src="/logo.svg"
               width="30"

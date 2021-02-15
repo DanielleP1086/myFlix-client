@@ -1,6 +1,9 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 
+import Button from 'react-bootstrap/Button';
+
+
 
 
 
@@ -42,7 +45,7 @@ export class MovieView extends React.Component {
           <span className="label">Director: </span>
           <span className="value">{movie.Director.Name}</span>
         </div>
-        <button onClick={this.refreshPage}>Close</button>
+        <Button onClick={this.refreshPage} variant="info" className='card-button'>Close</Button>
       </div>
     )
   }
