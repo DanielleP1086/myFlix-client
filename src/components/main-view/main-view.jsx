@@ -3,6 +3,10 @@ import axios from 'axios';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Navbar from 'react-bootstrap/Navbar';
+
+//import { React Component as Logo } from './logo.svg'
+
 
 import { LoginView } from '../login-view/login-view';
 import { RegistrationView } from '../registration-view/registration-view';
@@ -22,9 +26,10 @@ export class MainView extends React.Component {
     };
   }
 
+  //check syntax for this and add a consol
   componentDidMount() {
     axios.get('https://filmx-society.herokuapp.com/movies')
-      .then(response => {
+      .then((response) => {
         //assign result to state
         this.setState({
           movies: response.data
@@ -35,6 +40,7 @@ export class MainView extends React.Component {
       });
   }
 
+  //compare bottom two 
   onMovieClick(movie) {
     this.setState({
       selectedMovie: movie
@@ -45,6 +51,7 @@ export class MainView extends React.Component {
     this.setState({
       user
     });
+    console.log('user: ' + this.state.user);
   }
 
   onRegister(newUser) {
@@ -60,31 +67,55 @@ export class MainView extends React.Component {
   }
 
   render() {
-    const { movies, selectedMovie, user, newUser } = this.state;
+    const { movies, selectedMovie, user } = this.state;
 
-    if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+    if (!user)
+      return <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />;
 
-    if (!newUser) return (
-      <RegistrationView onRegister={(newUser) => this.onRegister(newUser)} />
-    );
+    /* if (!newUser) return (
+       <RegistrationView onRegister={(newUser) => this.onRegister(newUser)} />
+     );*/
 
     //before the movies have been loaded
     if (!movies) return <div className="main-view" />;
 
     return (
       <div className="main-view">
-        {}
+        <Navbar bg="dark">
+          <Navbar.Brand href="#home">
+            <img
+              src="/logo.svg"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              alt="Film Society"
+            />
+          </Navbar.Brand>
+        </Navbar>
         {selectedMovie
           ? (
             <Row className="justify-content-md-center">
-              <Col md={8}>
-                <MovieView movie={selectedMovie} onBackClick={movie => this.onMovieClick(null)} />
+              <Col md={2}>
+                <MovieView
+                  movie={selectedMovie}
+                  onBackClick={movie => this.onMovieClick(null)}
+                />
               </Col>
             </Row>
           )
-          : movies.map(movie => (
-            <MovieCard key={movie._id} movie={movie} onClick={movie => this.onMovieClick(movie)} />
-          ))
+          : (
+            <Row className="justify-content-md-center">
+              {movies.map((movie) => (
+                <Col md={4}>
+                  <MovieCard
+                    key={movie._id}
+                    movie={movie}
+                    onClick={movie => this.onMovieClick(movie)}
+                  />
+                </Col>
+              ))}
+            </Row>
+          )
         }
       </div>
     );

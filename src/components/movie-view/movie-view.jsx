@@ -3,6 +3,7 @@ import { PropTypes } from 'prop-types';
 
 
 
+
 export class MovieView extends React.Component {
 
   constructor() {

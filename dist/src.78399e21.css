@@ -1,5 +1,14 @@
-.my-flix {
-  color: steelblue;
-}
+.card-title {
+  color: #032d38;
+  text-decoration: underline; }
+
+.card {
+  padding: 15px; }
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital@1&display=swap");
+body {
+  background-color: #f5f9fa;
+  font-family: 'Roboto', sans-serif; }
+
 
 /*# sourceMappingURL=/src.78399e21.css.map */

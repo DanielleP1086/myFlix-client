@@ -1,5 +1,7 @@
-$color: steelblue;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital@1&display=swap');
 
-.my-flix {
-  color: $color;
+
+body{
+  background-color: #f5f9fa;
+  font-family: 'Roboto', sans-serif;
 }
