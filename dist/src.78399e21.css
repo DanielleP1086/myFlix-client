@@ -5,6 +5,13 @@
 .card {
   padding: 15px; }
 
+.movie-view {
+  width: 400px;
+  margin: 0 auto;
+  border: .5px solid #032d38;
+  font-size: large;
+  padding-top: 25px; }
+
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors

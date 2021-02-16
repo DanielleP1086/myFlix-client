@@ -3,6 +3,7 @@ import { PropTypes } from 'prop-types';
 
 import Button from 'react-bootstrap/Button';
 
+import './movie-view.scss'
 
 
 
