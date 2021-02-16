@@ -2,14 +2,27 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+import axios from 'axios';
+
 export function LoginView(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(username, password);
-    props.onLoggedIn(username);
+    //send a request to the server for authentication
+    axios.post('https://filmx-society.herokuapp.com/login', {
+      Username: username,
+      Password: password
+    })
+      //after the request has been made if there's a match props will be called with username and token
+      .then(response => {
+        const data = response.data;
+        props.onLoggedIn(data);
+      })
+      .catch(e => {
+        console.log('no such user')
+      });
   };
 
 

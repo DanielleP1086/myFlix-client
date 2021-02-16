@@ -36275,6 +36275,8 @@ var _Form = _interopRequireDefault(require("react-bootstrap/Form"));
 
 var _Button = _interopRequireDefault(require("react-bootstrap/Button"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -36305,9 +36307,18 @@ function LoginView(props) {
       setPassword = _useState4[1];
 
   var handleSubmit = function handleSubmit(e) {
-    e.preventDefault();
-    console.log(username, password);
-    props.onLoggedIn(username);
+    e.preventDefault(); //send a request to the server for authentication
+
+    _axios.default.post('https://filmx-society.herokuapp.com/login', {
+      Username: username,
+      Password: password
+    }) //after the request has been made if there's a match props will be called with username and token
+    .then(function (response) {
+      var data = response.data;
+      props.onLoggedIn(data);
+    }).catch(function (e) {
+      console.log('no such user');
+    });
   };
 
   return _react.default.createElement(_Form.default, null, _react.default.createElement(_Form.default.Group, {
@@ -36332,7 +36343,7 @@ function LoginView(props) {
     onClick: handleSubmit
   }, "Submit"));
 }
-},{"react":"../node_modules/react/index.js","react-bootstrap/Form":"../node_modules/react-bootstrap/esm/Form.js","react-bootstrap/Button":"../node_modules/react-bootstrap/esm/Button.js"}],"components/registration-view/registration-view.jsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-bootstrap/Form":"../node_modules/react-bootstrap/esm/Form.js","react-bootstrap/Button":"../node_modules/react-bootstrap/esm/Button.js","axios":"../node_modules/axios/index.js"}],"components/registration-view/registration-view.jsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36863,7 +36874,7 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
       }, movie.Director.Name)), _react.default.createElement(_Button.default, {
         onClick: this.refreshPage,
         variant: "info",
-        className: "card-button"
+        className: "view-button"
       }, "Close"));
     }
   }]);
@@ -36886,7 +36897,9 @@ MovieView.propTypes = {
     onClick: _propTypes.PropTypes.func
   }).isRequired
 };
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/Button":"../node_modules/react-bootstrap/esm/Button.js","./movie-view.scss":"components/movie-view/movie-view.scss"}],"components/main-view/main-view.jsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/Button":"../node_modules/react-bootstrap/esm/Button.js","./movie-view.scss":"components/movie-view/movie-view.scss"}],"components/main-view/logo.svg":[function(require,module,exports) {
+module.exports = "/logo.1a5ec6f2.svg";
+},{}],"components/main-view/main-view.jsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36911,6 +36924,8 @@ var _registrationView = require("../registration-view/registration-view");
 var _movieCard = require("../movie-card/movie-card");
 
 var _movieView = require("../movie-view/movie-view");
+
+var _Button = _interopRequireDefault(require("react-bootstrap/esm/Button"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36955,15 +36970,32 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       newUser: null
     };
     return _this;
-  } //check syntax for this and add a consol
-
+  }
 
   _createClass(MainView, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      //persist login data
+      var accessToken = localStorage.getItem('token');
+
+      if (accessToken !== null) {
+        this.setState({
+          user: localStorage.getItem('user')
+        });
+        this.getMovies(accessToken);
+      }
+    }
+  }, {
+    key: "getMovies",
+    value: function getMovies(token) {
       var _this2 = this;
 
-      _axios.default.get('https://filmx-society.herokuapp.com/movies').then(function (response) {
+      _axios.default.get('https://filmx-society.herokuapp.com/movies', {
+        headers: {
+          Authorization: "Bearer ".concat(token) //take out automatic spacing
+
+        }
+      }).then(function (response) {
         //assign result to state
         _this2.setState({
           movies: response.data
@@ -36971,8 +37003,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       }).catch(function (error) {
         console.log(error);
       });
-    } //compare bottom two 
-
+    }
   }, {
     key: "onMovieClick",
     value: function onMovieClick(movie) {
@@ -36982,11 +37013,15 @@ var MainView = /*#__PURE__*/function (_React$Component) {
     }
   }, {
     key: "onLoggedIn",
-    value: function onLoggedIn(user) {
+    value: function onLoggedIn(authData) {
+      console.log(authData);
       this.setState({
-        user: user
-      });
-      console.log('user: ' + this.state.user);
+        user: authData.user.Username
+      }); //save authorization data (user + token) locally
+
+      localStorage.setItem('token', authData.token);
+      localStorage.setItem('user', authData.user.Username);
+      this.getMovies(authData.token);
     }
   }, {
     key: "onRegister",
@@ -36994,6 +37029,12 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       this.setState({
         newUser: newUser
       });
+    }
+  }, {
+    key: "onLogoutClick",
+    value: function onLogoutClick(logout) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
   }, {
     key: "setInititalState",
@@ -37028,13 +37069,15 @@ var MainView = /*#__PURE__*/function (_React$Component) {
         className: "main-view"
       }, _react.default.createElement(_Navbar.default, {
         bg: "dark"
-      }, _react.default.createElement(_Navbar.default.Brand, null, _react.default.createElement("img", {
-        src: "/logo.svg",
-        width: "30",
-        height: "30",
+      }, _react.default.createElement(_Navbar.default.Brand, {
+        className: "web-title"
+      }, _react.default.createElement("img", {
+        src: require("./logo.svg"),
+        width: "50",
+        height: "50",
         className: "d-inline-block align-top",
         alt: "Film Society"
-      }))), selectedMovie ? _react.default.createElement(_Row.default, {
+      }), ' ', "Film Society")), selectedMovie ? _react.default.createElement(_Row.default, {
         className: "justify-content-md-center"
       }, _react.default.createElement(_Col.default, {
         md: 2
@@ -37055,7 +37098,11 @@ var MainView = /*#__PURE__*/function (_React$Component) {
             return _this3.onMovieClick(movie);
           }
         }));
-      })));
+      })), _react.default.createElement(_Button.default, {
+        onLogoutClick: function onLogoutClick(logout) {
+          return _this3.onLogoutClick;
+        }
+      }, "Log Out"));
     }
   }]);
 
@@ -37063,7 +37110,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
 }(_react.default.Component);
 
 exports.MainView = MainView;
-},{"react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js","react-bootstrap/Row":"../node_modules/react-bootstrap/esm/Row.js","react-bootstrap/Col":"../node_modules/react-bootstrap/esm/Col.js","react-bootstrap/Navbar":"../node_modules/react-bootstrap/esm/Navbar.js","../login-view/login-view":"components/login-view/login-view.jsx","../registration-view/registration-view":"components/registration-view/registration-view.jsx","../movie-card/movie-card":"components/movie-card/movie-card.jsx","../movie-view/movie-view":"components/movie-view/movie-view.jsx"}],"../node_modules/bootstrap/dist/css/bootstrap.min.css":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js","react-bootstrap/Row":"../node_modules/react-bootstrap/esm/Row.js","react-bootstrap/Col":"../node_modules/react-bootstrap/esm/Col.js","react-bootstrap/Navbar":"../node_modules/react-bootstrap/esm/Navbar.js","../login-view/login-view":"components/login-view/login-view.jsx","../registration-view/registration-view":"components/registration-view/registration-view.jsx","../movie-card/movie-card":"components/movie-card/movie-card.jsx","../movie-view/movie-view":"components/movie-view/movie-view.jsx","react-bootstrap/esm/Button":"../node_modules/react-bootstrap/esm/Button.js","./logo.svg":"components/main-view/logo.svg"}],"../node_modules/bootstrap/dist/css/bootstrap.min.css":[function(require,module,exports) {
 
         var reloadCSS = require('_css_loader');
         module.hot.dispose(reloadCSS);
@@ -37167,7 +37214,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55810" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52932" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

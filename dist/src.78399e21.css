@@ -7,10 +7,12 @@
 
 .movie-view {
   width: 400px;
-  margin: 0 auto;
-  border: .5px solid #032d38;
+  margin-top: 20px;
   font-size: large;
-  padding-top: 25px; }
+  justify-content: center; }
+
+.view-button {
+  padding-top: 20px; }
 
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)

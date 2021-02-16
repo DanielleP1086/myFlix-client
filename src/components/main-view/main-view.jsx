@@ -5,13 +5,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
 
-//import { React Component as Logo } from './logo.svg'
-
-
 import { LoginView } from '../login-view/login-view';
 import { RegistrationView } from '../registration-view/registration-view';
 import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
+import Button from 'react-bootstrap/esm/Button';
 
 export class MainView extends React.Component {
   constructor() {
@@ -26,10 +24,22 @@ export class MainView extends React.Component {
     };
   }
 
-  //check syntax for this and add a consol
   componentDidMount() {
-    axios.get('https://filmx-society.herokuapp.com/movies')
-      .then((response) => {
+    //persist login data
+    let accessToken = localStorage.getItem('token');
+    if (accessToken !== null) {
+      this.setState({
+        user: localStorage.getItem('user')
+      });
+      this.getMovies(accessToken);
+    }
+  }
+
+  getMovies(token) {
+    axios.get('https://filmx-society.herokuapp.com/movies', {
+      headers: { Authorization: `Bearer ${token}` } //take out automatic spacing
+    })
+      .then(response => {
         //assign result to state
         this.setState({
           movies: response.data
@@ -40,24 +50,33 @@ export class MainView extends React.Component {
       });
   }
 
-  //compare bottom two 
+
   onMovieClick(movie) {
     this.setState({
       selectedMovie: movie
     });
   }
 
-  onLoggedIn(user) {
+  onLoggedIn(authData) {
+    console.log(authData);
     this.setState({
-      user
+      user: authData.user.Username
     });
-    console.log('user: ' + this.state.user);
+    //save authorization data (user + token) locally
+    localStorage.setItem('token', authData.token);
+    localStorage.setItem('user', authData.user.Username);
+    this.getMovies(authData.token);
   }
 
   onRegister(newUser) {
     this.setState({
       newUser
     });
+  }
+
+  onLogoutClick(logout) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
   setInititalState() {
@@ -82,15 +101,16 @@ export class MainView extends React.Component {
     return (
       <div className="main-view">
         <Navbar bg="dark">
-          <Navbar.Brand>
+          <Navbar.Brand className="web-title">
             <img
-              src="/logo.svg"
-              width="30"
-              height="30"
+              src={require("./logo.svg")}
+              width="50"
+              height="50"
               className="d-inline-block align-top"
               alt="Film Society"
-            />
-          </Navbar.Brand>
+            />{' '}
+            Film Society
+            </Navbar.Brand>
         </Navbar>
         {selectedMovie
           ? (
@@ -115,8 +135,10 @@ export class MainView extends React.Component {
                 </Col>
               ))}
             </Row>
+
           )
         }
+        <Button onLogoutClick={logout => this.onLogoutClick}>Log Out</Button>
       </div>
     );
   }
