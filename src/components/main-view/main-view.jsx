@@ -1,15 +1,18 @@
 import React from 'react';
 import axios from 'axios';
 
+import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/esm/Button';
 
 import { LoginView } from '../login-view/login-view';
 import { RegistrationView } from '../registration-view/registration-view';
 import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
-import Button from 'react-bootstrap/esm/Button';
+
 
 export class MainView extends React.Component {
   constructor() {
@@ -17,10 +20,8 @@ export class MainView extends React.Component {
 
     //intialize as null for each state
     this.state = {
-      movies: null,
-      selectedMovie: null,
-      user: null,
-      newUser: null
+      movies: [],
+      user: null
     };
   }
 
@@ -51,11 +52,11 @@ export class MainView extends React.Component {
   }
 
 
-  onMovieClick(movie) {
+  /*onMovieClick(movie) {
     this.setState({
       selectedMovie: movie
     });
-  }
+  }*/
 
   onLoggedIn(authData) {
     console.log(authData);
@@ -68,25 +69,20 @@ export class MainView extends React.Component {
     this.getMovies(authData.token);
   }
 
-  onRegister(newUser) {
-    this.setState({
-      newUser
-    });
-  }
 
   onLogoutClick(logout) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
 
-  setInititalState() {
-    this.setState({
-      selectedMovie: null
-    });
-  }
+  /* setInititalState() {
+     this.setState({
+       selectedMovie: null
+     });
+   }*/
 
   render() {
-    const { movies, selectedMovie, user } = this.state;
+    const { movies, user } = this.state;
 
     if (!user)
       return <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />;
@@ -111,7 +107,40 @@ export class MainView extends React.Component {
             />{' '}
             Film Society
             </Navbar.Brand>
+          <Navbar.Text>
+            Signed in as:
+            <Link to={`/users/${Username}`}>
+              <Button varient="link">{this.state.username}</Button>
+            </Link>
+          </Navbar.Text>
         </Navbar>
+        <Router>
+          <div className="main-view">
+            <Route exact path="/" render={() => {
+              if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />
+              return movies.map(m => <MovieCard key={m._id} movie={m} />)
+            }
+            } />
+            <Route path="/register" render={() => <RegistrationView />} />
+            <Route exact path="/movies/:movieId" render={({ match }) =>
+              <MovieView movie={movies.find(m => m._id === match.params.movieID)} />} />
+            <Route exact path="/genres/:name" render={({ match }) => {
+              if (!movies) return <div className="main-view" />;
+              return <GenreView genre={movies.find(m => m.Genre.Name === match.params.name).Genre} />
+            }
+            } />
+            <Route exact path="/directors/:name" render={({ match }) => {
+              if (!movies) return <div className="main-view" />;
+              return <DirectorView director={movies.find(m => m.Director.Name === match.params.name).Director} />
+            }
+            } />
+            <Route exact path="/users/:Username" render={() => {
+              if (!user)
+                return <ProfileView onLoggedIn={user => this.onLoggedIn(user)} />
+            }
+            } />
+          </div>
+        </Router>
         {selectedMovie
           ? (
             <Row className="justify-content-md-center">
