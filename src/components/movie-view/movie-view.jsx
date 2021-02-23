@@ -18,8 +18,9 @@ export class MovieView extends React.Component {
 
 
   refreshPage() {
-    window.location.reload(false);
+    window.open('/movies', '_self');
   }
+
 
   render() {
     const { movie } = this.props;

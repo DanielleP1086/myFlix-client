@@ -49,9 +49,9 @@ export class MainView extends React.Component {
 
   onLoggedIn(user) {
     this.setState({
-      user
+      user: user
     });
-    console.log('user: ' + this.state.user);
+    console.log(user);
   }
 
   onRegister(newUser) {
@@ -68,6 +68,7 @@ export class MainView extends React.Component {
 
   render() {
     const { movies, selectedMovie, user } = this.state;
+    console.log(user);
 
     if (!user)
       return <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />;

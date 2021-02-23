@@ -36824,7 +36824,7 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
   _createClass(MovieView, [{
     key: "refreshPage",
     value: function refreshPage() {
-      window.location.reload(false);
+      window.open('/movies', '_self');
     }
   }, {
     key: "render",
@@ -36986,7 +36986,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       this.setState({
         user: user
       });
-      console.log('user: ' + this.state.user);
+      console.log(user);
     }
   }, {
     key: "onRegister",
@@ -37011,6 +37011,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
           movies = _this$state.movies,
           selectedMovie = _this$state.selectedMovie,
           user = _this$state.user;
+      console.log(user);
       if (!user) return _react.default.createElement(_loginView.LoginView, {
         onLoggedIn: function onLoggedIn(user) {
           return _this3.onLoggedIn(user);
@@ -37167,7 +37168,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55810" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57769" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
