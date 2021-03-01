@@ -61,7 +61,9 @@ export function ProfileView(props) {
 
   }
 
-
-
-  return ();
+  return (
+    <div className="profile-view">
+      <
+    </div>
+  );
 }

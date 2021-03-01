@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -39,7 +42,14 @@ export function LoginView(props) {
       </Form.Group>
 
       <Button variant="info" type="submit" onClick={handleSubmit}>Submit</Button>
+      <Router>
+        <Link to={`/register`}>
+          <Button varient="info">Register</Button>
+        </Link>
+      </Router>
     </Form>
+
+
   );
 }
 

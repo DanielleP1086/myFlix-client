@@ -48,19 +48,21 @@ export class MovieView extends React.Component {
           <span className="label">Director: </span>
           <span className="value">{movie.Director.Name}</span>
         </div>
-        <Button onClick={this.refreshPage} variant="info" className='view-button'>Close</Button>
+        <Link to={`/`}>
+          <Button variant="info">Close</Button>
+        </Link>
         <Link to={`/directors/${movie.Director.Name}`}>
           <Button variant="info">Director</Button>
         </Link>
         <Link to={`/genres/${movie.Genre.Name}`}>
-          <Button varient="info">Genre</Button>
+          <Button variant="info">Genre</Button>
         </Link>
       </div>
-    )
+    );
   }
 }
 
-MovieView.propTypes = {
+/*MovieView.propTypes = {
   movie: PropTypes.shape({
     Title: PropTypes.string,
     Description: PropTypes.string,
@@ -74,3 +76,4 @@ MovieView.propTypes = {
     onClick: PropTypes.func
   }).isRequired
 };
+*/

@@ -14,7 +14,7 @@ export function RegistrationView(props) {
   const [birthday, setBirthday] = useState('');
 
   const handleSubmit = (e) => {
-    e.prevent.Default();
+    e.preventDefault();
     axios.post('https://filmx-society.herokuapp.com/users', {
       Username: username,
       Password: password,

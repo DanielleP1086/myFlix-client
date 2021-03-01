@@ -5,6 +5,9 @@ import React from 'react';
 
 import Button from 'react-bootstrap/Button';
 
+import { BrowserRouter as Router, Route, useParams, Link } from "react-router-dom";
+
+
 //import './director-view.scss'
 
 
@@ -25,15 +28,26 @@ export class DirectorView extends React.Component {
   }
 
   render() {
-    const { movie } = this.props;
+    const { director } = this.props;
+    console.log(director);
 
-    if (!movie) return null;
+    if (!director) return null;
 
     return (
       <div className="movie-director">
-        <span className="label">Director: </span>
-        <span className="value">{movie.Director.Name}</span>
-        <Button onClick={this.refreshPage} variant="info" className='view-button'>Close</Button>
+        <div>
+          <span className="label">Director: </span>
+          {/* <span className="value">{movie.Genre.Name}</span> */}
+        </div>
+        <div>
+          <span className="label">Bio: </span>
+        </div>
+        <div>
+          <span className="label">Birthday: </span>
+        </div>
+        <Link to={`/`}>
+          <Button variant="info">Close</Button>
+        </Link>
       </div>
     )
   }

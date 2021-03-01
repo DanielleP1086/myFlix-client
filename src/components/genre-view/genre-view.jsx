@@ -2,12 +2,15 @@ import React from 'react';
 
 import Button from 'react-bootstrap/Button';
 
+import { BrowserRouter as Router, Route, useParams, Link } from "react-router-dom";
+
+
 //import './genre-view.scss'
 
 
 
 
-export class DirectorView extends React.Component {
+export class GenreView extends React.Component {
 
   constructor() {
     super();
@@ -15,22 +18,24 @@ export class DirectorView extends React.Component {
     this.state = {};
   }
 
-
-  //is this the correct function to return to the original movie?
-  refreshPage() {
-    window.location.reload(false);
-  }
-
   render() {
-    const { movie } = this.props;
+    const { genre } = this.props;
+    console.log(genre);
 
-    if (!movie) return null;
+    if (!genre) return null;
 
     return (
       <div className="movie-genre">
-        <span className="label">Genre: </span>
-        <span className="value">{movie.Genre.Name}</span>
-        <Button onClick={this.refreshPage} variant="info" className='view-button'>Close</Button>
+        <div>
+          <span className="label">Genre: </span>
+          {/* <span className="value">{movie.Genre.Name}</span> */}
+        </div>
+        <div>
+          <span className="label">Genre Description: </span>
+        </div>
+        <Link to={`/`}>
+          <Button variant="info">Close</Button>
+        </Link>
       </div>
     )
   }
