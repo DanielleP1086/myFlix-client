@@ -14,7 +14,10 @@ import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
 import { DirectorView } from '../director-view/director-view';
 import { GenreView } from '../genre-view/genre-view';
-//import { ProfileView } from '../profile-view/profile-view';
+import { ProfileView } from '../profile-view/profile-view';
+
+import './main-view.scss';
+import { Container } from 'react-bootstrap';
 
 
 export class MainView extends React.Component {
@@ -95,25 +98,41 @@ export class MainView extends React.Component {
     return (
       <div className="main-view">
         <Router>
-          <Navbar bg="dark">
-            <Navbar.Brand className="web-title">
-              <img
-                src={require("./logo.svg")}
-                width="50"
-                height="50"
-                className="d-inline-block align-top"
-                alt="Film Society"
-              />{' '}
+          <Container>
+            <Navbar bg="light" className="sticky-nav">
+              <Navbar.Brand className="web-title">
+                <img
+                  src={require("./logo.svg")}
+                  width="50"
+                  height="50"
+                  className="d-inline-block align-top"
+                  alt="Film Society"
+                />{' '}
             Film Society
             </Navbar.Brand>
-            <Navbar.Text>
-              Signed in as:
-            </Navbar.Text>
-          </Navbar>
+              <Navbar.Text className="signinText">
+                <Link to={`/users/${user}`}>
+                  <Button variant="link">My Account</Button>
+                </Link>
+              </Navbar.Text>
+              <Navbar>
+                <Link to={`/`}>
+                  <Button variant="link">Home</Button>
+                </Link>
+              </Navbar>
+            </Navbar>
+          </Container>
           <div className="main-view">
             <Route exact path="/" render={() => {
               if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-              return movies.map(m => <MovieCard key={m._id} movie={m} />)
+              return movies.map(m =>
+                <Row className="justify-content-md-center">
+                  <Col md={4}>
+                    <MovieCard key={m._id} movie={m}
+                    />
+                  </Col>
+                </Row>)
+
             }
             } />
             <Route path="/register" render={() => <RegistrationView />} />
@@ -132,10 +151,8 @@ export class MainView extends React.Component {
               return <DirectorView director={movies.find(m => m.Director.Name === match.params.name).Director} />
             }
             } />
-            <Route exact path="/users/:Username" render={() => {
-              if (!user)
-                return <ProfileView onLoggedIn={user => this.onLoggedIn(user)} />
-            }
+            <Route exact path="/users/:Username" render={() =>
+              <ProfileView movies={movies} />
             } />
           </div>
         </Router>

@@ -1,11 +1,12 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 
-import { Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, useParams, Link } from "react-router-dom";
 
 import Button from 'react-bootstrap/Button';
 
 import './movie-view.scss'
+import axios from 'axios';
 
 
 
@@ -18,10 +19,26 @@ export class MovieView extends React.Component {
     this.state = {};
   }
 
+  addFavorite(movie) {
+    let token = localStorage.getItem("token");
+    let url =
+      `https://filmx-society.herokuapp.com/users/` +
+      localStorage.getItem("user") +
+      "/movies/" +
+      movie._id;
 
-  refreshPage() {
-    window.location.reload(false);
+    axios.post(url, "", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        window.open("/users/" + localStorage.getItem("user"), "_self");
+        alert("Added to favorites!");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
+
 
   render() {
     const { movie } = this.props;
@@ -48,15 +65,23 @@ export class MovieView extends React.Component {
           <span className="label">Director: </span>
           <span className="value">{movie.Director.Name}</span>
         </div>
+        <div>
+          <Link to={`/genres/${movie.Genre.Name}`}>
+            <Button variant="info">Genre</Button>
+          </Link>
+          <Link to={`/directors/${movie.Director.Name}`}>
+            <Button variant="info">Director</Button>
+          </Link>
+        </div>
+        <br />
         <Link to={`/`}>
           <Button variant="info">Close</Button>
         </Link>
-        <Link to={`/directors/${movie.Director.Name}`}>
-          <Button variant="info">Director</Button>
-        </Link>
-        <Link to={`/genres/${movie.Genre.Name}`}>
-          <Button variant="info">Genre</Button>
-        </Link>
+        <div>
+          <Button variant="primary" size="sm" onClick={() => this.addFavorite(movie)}>
+            Add to Favorites
+          </Button>
+        </div>
       </div>
     );
   }

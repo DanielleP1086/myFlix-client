@@ -14,6 +14,17 @@
 .view-button {
   padding-top: 20px; }
 
+.web-title {
+  font-size: large;
+  color: antiquewhite; }
+
+.signinText {
+  justify-content: flex-end; }
+
+.sticky-nav {
+  position: sticky;
+  top: 0; }
+
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors
