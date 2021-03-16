@@ -16,7 +16,6 @@ export class ProfileView extends React.Component {
       email: "",
       birthday: "",
       favoriteMovies: [],
-      movies: ""
     };
   }
 
@@ -50,6 +49,50 @@ export class ProfileView extends React.Component {
       });
   }
 
+  updateProfile(token) {
+    const username = localStorage.getItem("user")
+    axios.put(`https://filmx-society.herokuapp.com/users/${username}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      data: {
+        //if then 
+        Username: newUsername ? newUsername : this.state.Username,
+        Password: newPassword ? newPassword : this.state.Password,
+        Email: newEmail ? newEmail : this.state.Email,
+        Birthday: newBirthday ? newBirthday : this.state.Birthday
+      },
+    })
+      .then((response) => {
+        alert('Saved Changes');
+        this.setState({
+          Username: response.data.Username,
+          Password: response.data.Password,
+          Email: response.data.Email,
+          Birthday: response.data.Birthday,
+        });
+        localStorage.setItem('user', this.state.Username);
+        window.open(`/users/${username}`, '_self');
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  setUsername(input) {
+    this.Username = input;
+  }
+
+  setPassword(input) {
+    this.Password = input;
+  }
+
+  setEmail(input) {
+    this.Email = input;
+  }
+
+  setPassword(input) {
+    this.Password = input;
+  }
+
   removeMovie(movie) {
     let token = localStorage.getItem("token");
     let url =
@@ -68,19 +111,21 @@ export class ProfileView extends React.Component {
   }
 
 
-  deleteProfile() {
-    let token = localStorage.getItem("token");
-    let user = localStorage.getItem("user");
-    axios.delete(`filmx-society.herokuapp.com/users/${username}`, { headers: { Authorization: `Bearer ${token}` } }
-    )
+  deleteProfile(e) {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    axios.delete(`filmx-society.herokuapp.com/users/${username}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(() => {
-        alert(user + "has been deleted");
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+        alert(user + "has been deleted");
         window.location.pathname = "/";
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((e) => {
+        console.log(e);
       });
   }
 
@@ -110,48 +155,54 @@ export class ProfileView extends React.Component {
 
               <Form.Group controlId="formUsername">
                 <Form.Label>Username: </Form.Label>
-                <Form.Control type="text" value={username} onChange={e => setUsername(e.target.value)} />
+                <Form.Control type="text" onChange={e => this.setUsername(e.target.value)} />
               </Form.Group>
 
               <Form.Group controlId="formPassword">
                 <Form.Label>Password: </Form.Label>
-                <Form.Control type="text" value={password} onChange={e => setPassword(e.target.value)} />
+                <Form.Control type="text" onChange={e => this.setPassword(e.target.value)} />
               </Form.Group>
 
               <Form.Group controlId="formEmail">
                 <Form.Label>Email: </Form.Label>
-                <Form.Control type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                <Form.Control type="email" onChange={e => this.setEmail(e.target.value)} />
               </Form.Group>
 
               <Form.Group controlId="formBirthday">
                 <Form.Label>Birthday: </Form.Label>
-                <Form.Control type="date" value={birthday} onChange={e => setBirthday(e.target.value)} />
+                <Form.Control type="date" onChange={e => this.setBirthday(e.target.value)} />
               </Form.Group>
 
-              {/* <Button variant="info" type="submit" onClick={updateProfile}>Submit Changes</Button> */}
+              <Button variant="info" type="submit" onClick={() => this.updateProfile()}>Submit Changes</Button>
             </Form>
           </Accordion.Collapse>
         </Accordion>
 
         <div>
-          <Button variant="info" onClick={() => this.deleteProfile()}>Delete Account</Button>
+          <Button variant="info" onClick={(e) => this.deleteProfile(e)}>Delete Account</Button>
         </div>
         <div>
           <h1>Favorite Movies</h1>
-          {favoriteMovies.map((movie) => {
-            return (
-              <div key={movie.id}>
-                <Card>
-                  <Card.Img variant="top" src={movie.ImagePath} />
-                  <Card.Body>
-                    <Link to={`/movies/${movie._id}`}>
-                      <Card.Title>{movie.Title}</Card.Title>
-                    </Link>
-                  </Card.Body>
-                </Card>
-              </div>
-            );
-          })}
+          {favoriteMovies &&
+            movies.map(
+              (movie) => {
+                if (favoriteMovies.find((favMovie) => favMovie === movie._id)) {
+                  return (
+                    <div key={movie._id}>
+                      <Card>
+                        <Card.Img variant="top" src={movie.ImagePath} />
+                        <Card.Body>
+                          <Link to={`/movies/${movie._id}`}>
+                            <Card.Title>{movie.Title}</Card.Title>
+                          </Link>
+                        </Card.Body>
+                      </Card>
+                    </div>
+                  );
+                }
+              }
+            )
+          }
         </div>
       </div>
     );
