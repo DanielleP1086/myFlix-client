@@ -5,14 +5,32 @@
 .card {
   padding: 15px; }
 
-.movie-view {
-  width: 400px;
-  margin-top: 20px;
-  font-size: large;
-  justify-content: center; }
+.movie-image {
+  height: '100px';
+  width: '100px'; }
 
-.view-button {
-  padding-top: 20px; }
+.movie-view {
+  margin: 40px;
+  text-align: center; }
+
+.movie-poster {
+  width: 60%;
+  margin: 20px auto;
+  border-radius: 5%;
+  border: 2px solid #5bc0de; }
+
+.profile-view {
+  margin: 40px;
+  text-align: center; }
+
+.favorite-poster {
+  width: 60%;
+  margin: 20px auto;
+  border-radius: 5%;
+  border: 2px solid #5bc0de; }
+
+.favorite-card {
+  text-align: center; }
 
 .web-title {
   font-size: large;
@@ -24,6 +42,9 @@
 .sticky-nav {
   position: sticky;
   top: 0; }
+
+.search-box {
+  width: 100%; }
 
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)

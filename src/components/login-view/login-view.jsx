@@ -24,7 +24,7 @@ export function LoginView(props) {
         props.onLoggedIn(data);
       })
       .catch(e => {
-        console.log('no such user')
+        alert('no such user')
       });
   };
 
@@ -42,11 +42,17 @@ export function LoginView(props) {
       </Form.Group>
 
       <Button variant="info" type="submit" onClick={handleSubmit}>Submit</Button>
-      <Router>
-        <Link to={`/register`}>
-          <Button varient="info">Register</Button>
-        </Link>
-      </Router>
+      <br />
+      <br />
+      <br />
+      <div>
+        <p>No account? Register here!</p>
+        <Router>
+          <Link to={`/register`}>
+            <Button variant="info">Register</Button>
+          </Link>
+        </Router>
+      </div>
     </Form>
 
 

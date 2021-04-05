@@ -1,9 +1,9 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
 
-import { BrowserRouter as Router, Route, useParams, Link } from "react-router-dom";
+import { BrowserRouter as Link } from "react-router-dom";
 
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 import './movie-view.scss'
 import axios from 'axios';
@@ -47,58 +47,47 @@ export class MovieView extends React.Component {
 
     return (
       <div className="movie-view">
-        <img className="movie-poster" src={movie.ImagePath} />
-        <div className="movie-title">
-          <span className="label">Title: </span>
-          <span className="value">{movie.Title}</span>
-        </div>
-        <div className="movie-description">
-          <span className="label">Description: </span>
-          <span className="value">{movie.Description}</span>
-        </div>
+        <Card>
+          <Card.Body>
+            <img className="movie-poster" src={movie.ImagePath} />
+            <div className="movie-title">
+              <Card.Title className="value">{movie.Title}</Card.Title>
+            </div>
+            <div className="movie-description">
+              <Card.Text className="value">{movie.Description}</Card.Text>
+            </div>
 
-        <div className="movie-genre">
-          <span className="label">Genre: </span>
-          <span className="value">{movie.Genre.Name}</span>
-        </div>
-        <div className="movie-director">
-          <span className="label">Director: </span>
-          <span className="value">{movie.Director.Name}</span>
-        </div>
-        <div>
-          <Link to={`/genres/${movie.Genre.Name}`}>
-            <Button variant="info">Genre</Button>
-          </Link>
-          <Link to={`/directors/${movie.Director.Name}`}>
-            <Button variant="info">Director</Button>
-          </Link>
-        </div>
-        <br />
-        <Link to={`/`}>
-          <Button variant="info">Close</Button>
-        </Link>
-        <div>
-          <Button variant="primary" size="sm" onClick={() => this.addFavorite(movie)}>
-            Add to Favorites
-          </Button>
-        </div>
+            <div className="movie-genre">
+              <span className="label">Genre: </span>
+              <span className="value">{movie.Genre.Name}</span>
+            </div>
+            <div className="movie-director">
+              <span className="label">Director: </span>
+              <span className="value">{movie.Director.Name}</span>
+            </div>
+            <div>
+              <Link to={`/genres/${movie.Genre.Name}`}>
+                <Button variant="info">Genre Info</Button>
+              </Link>
+              <Link to={`/directors/${movie.Director.Name}`}>
+                <Button variant="info">Director Info</Button>
+              </Link>
+            </div>
+            <div>
+              <Card.Footer>
+                <Button className="favorites-button" variant="outline-info" size="sm" onClick={() => this.addFavorite(movie)}>
+                  Add to Favorites
+              </Button>
+                <br />
+                <Link to={`/`}>
+                  <Button className="close-button" variant="outline-info">Back to movies</Button>
+                </Link>
+              </Card.Footer>
+            </div>
+          </Card.Body>
+        </Card>
       </div>
     );
   }
 }
 
-/*MovieView.propTypes = {
-  movie: PropTypes.shape({
-    Title: PropTypes.string,
-    Description: PropTypes.string,
-    ImagePath: PropTypes.string,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string
-    }),
-    Director: PropTypes.shape({
-      Name: PropTypes.string
-    }),
-    onClick: PropTypes.func
-  }).isRequired
-};
-*/

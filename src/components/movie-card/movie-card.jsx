@@ -18,6 +18,7 @@ export class MovieCard extends React.Component {
       >
         <Card.Img
           variant="top"
+          className='movie-image'
           src={movie.ImagePath}
         />
         <Card.Body>

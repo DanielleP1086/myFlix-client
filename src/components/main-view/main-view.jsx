@@ -1,12 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 
-import { BrowserRouter as Router, Route, useParams, Link } from "react-router-dom";
+import { connect } from 'react-redux';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Navbar from 'react-bootstrap/Navbar';
-import Button from 'react-bootstrap/esm/Button';
+
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+
+import { setMovies } from '../../actions/actions';
+import MoviesList from '../movies-list/movies-list';
 
 import { LoginView } from '../login-view/login-view';
 import { RegistrationView } from '../registration-view/registration-view';
@@ -16,8 +17,14 @@ import { DirectorView } from '../director-view/director-view';
 import { GenreView } from '../genre-view/genre-view';
 import { ProfileView } from '../profile-view/profile-view';
 
-import './main-view.scss';
+import VisibilityFilterInput from '../visibility-filter-input/visibility-filter-input';
+
+
 import { Container } from 'react-bootstrap';
+import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/esm/Button';
+import Form from 'react-bootstrap/Form';
+import './main-view.scss';
 
 
 export class MainView extends React.Component {
@@ -45,13 +52,12 @@ export class MainView extends React.Component {
 
   getMovies(token) {
     axios.get('https://filmx-society.herokuapp.com/movies', {
-      headers: { Authorization: `Bearer ${token}` } //take out automatic spacing
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then(response => {
         //assign result to state
-        this.setState({
-          movies: response.data
-        });
+        this.props.setMovies(response.data
+        );
       })
       .catch(function (error) {
         console.log(error);
@@ -77,65 +83,75 @@ export class MainView extends React.Component {
   }
 
 
-  /*  onLogoutClick(logout) {
-     localStorage.removeItem('token');
-     localStorage.removeItem('user');
-   }
- 
-   /* setInititalState() {
-      this.setState({
-        selectedMovie: null
-      });
-    }*/
+
+  onLogout() {
+    this.setState(state => ({
+      user: null
+    }));
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.open('/', '_self');
+  }
 
   render() {
-    const { movies, user } = this.state;
+    let { movies, visibilityFilter } = this.props;
+    let { user } = this.state;
 
-
-    //before the movies have been loaded
-    if (!movies) return <div className="main-view" />;
 
     return (
       <div className="main-view">
         <Router>
-          <Container>
-            <Navbar bg="light" className="sticky-nav">
-              <Navbar.Brand className="web-title">
-                <img
-                  src={require("./logo.svg")}
-                  width="50"
-                  height="50"
-                  className="d-inline-block align-top"
-                  alt="Film Society"
-                />{' '}
+          <Navbar bg="light" className="sticky-nav">
+            <Navbar.Brand className="web-title">
+              <img
+                src={require("./logo.svg")}
+                width="50"
+                height="50"
+                className="d-inline-block align-top"
+                alt="Film Society"
+              />{' '}
             Film Society
             </Navbar.Brand>
-              <Navbar.Text className="signinText">
-                <Link to={`/users/${user}`}>
-                  <Button variant="link">My Account</Button>
-                </Link>
-              </Navbar.Text>
-              <Navbar>
-                <Link to={`/`}>
-                  <Button variant="link">Home</Button>
-                </Link>
-              </Navbar>
-            </Navbar>
-          </Container>
-          <div className="main-view">
-            <Route exact path="/" render={() => {
-              if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-              return movies.map(m =>
-                <Row className="justify-content-md-center">
-                  <Col md={4}>
-                    <MovieCard key={m._id} movie={m}
-                    />
-                  </Col>
-                </Row>)
 
-            }
-            } />
+            {!user ? (
+              <Container>
+                <Link to={`/`}>
+                  <Button variant="link">Sign In</Button>
+                </Link>
+                <Link to={`/register`}>
+                  <Button variant="link">Register!</Button>
+                </Link>
+              </Container>
+            ) : (
+                <Container>
+                  <Navbar.Text className="signinText">
+                    <Link to={`/users/${user}`}>
+                      <Button variant="link">My Account</Button>
+                    </Link>
+                  </Navbar.Text>
+                  <Navbar>
+                    <Link to={`/`}>
+                      <Button variant="link">Home</Button>
+                    </Link>
+                  </Navbar>
+                  <Navbar>
+                    <Button variant="link" type="submit" onClick={this.onLogout.bind(this)}>Logout</Button>
+                  </Navbar>
+                </Container>
+              )}
+          </Navbar>
+          <br />
+          <Form inline>
+            <VisibilityFilterInput className="search-box" variant='outline-light' visibilityFilter={visibilityFilter} />
+          </Form>
+          <br />
+          <Switch>
+            <Route exact path={['/', '/login']} render={() => {
+              if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+              return <MoviesList movies={movies} />;
+            }} />
             <Route path="/register" render={() => <RegistrationView />} />
+
             <Route path="/movies/:movieId" render={({ match }) => (
               <MovieView movie={movies.find(m => m._id === match.params.movieId)} />
             )}
@@ -154,9 +170,15 @@ export class MainView extends React.Component {
             <Route exact path="/users/:Username" render={() =>
               <ProfileView movies={movies} />
             } />
-          </div>
+          </Switch>
         </Router>
-      </div>
+      </div >
     );
   }
 }
+
+let mapStateToProps = state => {
+  return { movies: state.movies }
+}
+
+export default connect(mapStateToProps, { setMovies })(MainView);
