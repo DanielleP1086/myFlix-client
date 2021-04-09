@@ -17,9 +17,6 @@ import { DirectorView } from '../director-view/director-view';
 import { GenreView } from '../genre-view/genre-view';
 import { ProfileView } from '../profile-view/profile-view';
 
-import VisibilityFilterInput from '../visibility-filter-input/visibility-filter-input';
-
-
 import { Container } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/esm/Button';
@@ -72,7 +69,6 @@ export class MainView extends React.Component {
   }
 
   onLoggedIn(authData) {
-    console.log(authData);
     this.setState({
       user: authData.user.Username
     });
@@ -94,7 +90,7 @@ export class MainView extends React.Component {
   }
 
   render() {
-    let { movies, visibilityFilter } = this.props;
+    let { movies } = this.props;
     let { user } = this.state;
 
 
@@ -141,9 +137,7 @@ export class MainView extends React.Component {
               )}
           </Navbar>
           <br />
-          <Form inline>
-            <VisibilityFilterInput className="search-box" variant='outline-light' visibilityFilter={visibilityFilter} />
-          </Form>
+
           <br />
           <Switch>
             <Route exact path={['/', '/login']} render={() => {

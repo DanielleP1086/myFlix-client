@@ -23,7 +23,6 @@ export class ProfileView extends React.Component {
 
   componentDidMount() {
     let accessToken = localStorage.getItem("token")
-    console.log(accessToken);
     if (accessToken !== null) {
       this.getUser(accessToken);
     }
@@ -169,7 +168,7 @@ export class ProfileView extends React.Component {
 
               <Form.Group controlId="formPassword">
                 <Form.Label>Password: </Form.Label>
-                <Form.Control type="text" onChange={e => this.setPassword(e.target.value)} />
+                <Form.Control type="password" onChange={e => this.setPassword(e.target.value)} />
               </Form.Group>
 
               <Form.Group controlId="formEmail">

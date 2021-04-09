@@ -25,6 +25,7 @@ function MoviesList(props) {
 
   return (
     <Row>
+      <VisibilityFilterInput className="search-box" variant='outline-light' visibilityFilter={visibilityFilter} />
       {filteredMovies.map((m, index) => (
         <Col key={index} md='4' sm='6' xs='12'>
           <MovieCard key={m._id} movie={m} />
